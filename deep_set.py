@@ -21,7 +21,8 @@ def phi(num_nodes=5, num_layers=2, activation="relu", n=0):
             if i == 0:
                 out = layers.Conv1D(
                         num_nodes, 
-                        kernel_size=1, 
+                        kernel_size=1,
+                        use_bias=True,
                         padding="same",
                         name="phi_{}_nin_{}".format(n, i)
                     )(x)
@@ -29,15 +30,13 @@ def phi(num_nodes=5, num_layers=2, activation="relu", n=0):
                 out = layers.Conv1D(
                         num_nodes,
                         kernel_size=1,
+                        use_bias=True,
                         padding="same",
                         name="phi_{}_nin_{}".format(n, i)
                     )(out)
             out = layers.Activation(
                     activation,
                     name="phi_{}_nin_{}_{}".format(n, i, activation))(out)
-            out = layers.BatchNormalization(
-                        name="phi_{}_bn_{}".format(n, i)
-                    )(out)
         return out
     return inner
 
@@ -68,9 +67,6 @@ def rho(
                         activation,
                         name="rho_{}_dense_{}_{}".format(n, i, activation)
                     )(out)
-                out = layers.BatchNormalization(
-                        name="rho_{}_bn_{}".format(n, i)
-                    )(out)
             elif i == num_layers-1:
                 out = layers.Dense(
                         num_out,
@@ -83,9 +79,6 @@ def rho(
                 out = layers.Activation(
                         activation,
                         name="rho_{}_dense_{}_{}".format(n, i, activation)
-                    )(out)
-                out = layers.BatchNormalization(
-                        name="rho_{}_bn_{}".format(n, i)
                     )(out)
         if expand_dims:
             out = layers.Reshape(
